@@ -15,8 +15,13 @@ const (
 	ddragonURL = "https://ddragon.leagueoflegends.com"
 )
 
+// This is the default HTTP client used by the package. Override this value if you wish to use your own
 var (
 	HTTPClient = http.DefaultClient
+)
+
+// Errors that originate from this package
+var (
 	ErrNotFound = errors.New("not found")
 )
 
