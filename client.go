@@ -73,6 +73,10 @@ func ChampionsBrief(language Language, version Version) (map[ChampionID]Champion
 func Champions(language Language, version Version) (map[ChampionID]ChampionInfo, error) {
 	var cb champions
 	err := dispatchAndUnmarshal(fmt.Sprintf(ddragonURL+"/cdn/%v/data/%v/championFull.json", version, language), &cb)
+	for k, v := range cb.Data {
+		v.version = cb.Version
+		cb.Data[k] = v
+	}
 	return cb.Data, err
 }
 
@@ -83,6 +87,7 @@ func Champion(language Language, version Version, id ChampionID) (ChampionInfo, 
 		return ChampionInfo{}, err
 	}
 	for _, c := range cb.Data {
+		c.version = cb.Version
 		return c, nil
 	}
 	return ChampionInfo{}, ErrNotFound

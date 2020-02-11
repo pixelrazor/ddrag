@@ -14,12 +14,6 @@ type Language string
 // ChampionID is the ID of a champions (normally, but not always, just the champion name)
 type ChampionID string
 
-type ChampionPassiveImg string
-
-type ChampionSquareImg string
-
-type ChampionSpellImg string
-
 // All supported languages
 const (
 	Czech                 Language = "cs_CZ"
@@ -62,7 +56,7 @@ type championBrief struct {
 type champions struct {
 	Type    string                      `json:"type"`
 	Format  string                      `json:"format"`
-	Version string                      `json:"version"`
+	Version Version                     `json:"version"`
 	Data    map[ChampionID]ChampionInfo `json:"data"`
 }
 
@@ -80,13 +74,13 @@ type ChampionBrief struct {
 		Difficulty int `json:"difficulty"`
 	} `json:"info"`
 	Image struct {
-		Full   ChampionSquareImg `json:"full"`
-		Sprite string            `json:"sprite"`
-		Group  string            `json:"group"`
-		X      int               `json:"x"`
-		Y      int               `json:"y"`
-		W      int               `json:"w"`
-		H      int               `json:"h"`
+		Full   string `json:"full"`
+		Sprite string `json:"sprite"`
+		Group  string `json:"group"`
+		X      int    `json:"x"`
+		Y      int    `json:"y"`
+		W      int    `json:"w"`
+		H      int    `json:"h"`
 	} `json:"image"`
 	Tags    []string `json:"tags"`
 	Partype string   `json:"partype"`
@@ -117,23 +111,24 @@ type ChampionBrief struct {
 type champion struct {
 	Type    string                  `json:"type"`
 	Format  string                  `json:"format"`
-	Version string                  `json:"version"`
+	Version Version                 `json:"version"`
 	Data    map[string]ChampionInfo `json:"data"`
 }
 
 type ChampionInfo struct {
-	ID    ChampionID `json:"id"`
-	Key   string     `json:"key"`
-	Name  string     `json:"name"`
-	Title string     `json:"title"`
-	Image struct {
-		Full   ChampionSquareImg `json:"full"`
-		Sprite string            `json:"sprite"`
-		Group  string            `json:"group"`
-		X      int               `json:"x"`
-		Y      int               `json:"y"`
-		W      int               `json:"w"`
-		H      int               `json:"h"`
+	version Version
+	ID      ChampionID `json:"id"`
+	Key     string     `json:"key"`
+	Name    string     `json:"name"`
+	Title   string     `json:"title"`
+	Image   struct {
+		Full   string `json:"full"`
+		Sprite string `json:"sprite"`
+		Group  string `json:"group"`
+		X      int    `json:"x"`
+		Y      int    `json:"y"`
+		W      int    `json:"w"`
+		H      int    `json:"h"`
 	} `json:"image"`
 	Skins []struct {
 		ID      string `json:"id"`
@@ -199,13 +194,13 @@ type ChampionInfo struct {
 		Range      []int         `json:"range"`
 		RangeBurn  string        `json:"rangeBurn"`
 		Image      struct {
-			Full   ChampionSpellImg `json:"full"`
-			Sprite string           `json:"sprite"`
-			Group  string           `json:"group"`
-			X      int              `json:"x"`
-			Y      int              `json:"y"`
-			W      int              `json:"w"`
-			H      int              `json:"h"`
+			Full   string `json:"full"`
+			Sprite string `json:"sprite"`
+			Group  string `json:"group"`
+			X      int    `json:"x"`
+			Y      int    `json:"y"`
+			W      int    `json:"w"`
+			H      int    `json:"h"`
 		} `json:"image"`
 		Resource string `json:"resource"`
 	} `json:"spells"`
@@ -213,13 +208,13 @@ type ChampionInfo struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Image       struct {
-			Full   ChampionPassiveImg `json:"full"`
-			Sprite string             `json:"sprite"`
-			Group  string             `json:"group"`
-			X      int                `json:"x"`
-			Y      int                `json:"y"`
-			W      int                `json:"w"`
-			H      int                `json:"h"`
+			Full   string `json:"full"`
+			Sprite string `json:"sprite"`
+			Group  string `json:"group"`
+			X      int    `json:"x"`
+			Y      int    `json:"y"`
+			W      int    `json:"w"`
+			H      int    `json:"h"`
 		} `json:"image"`
 	} `json:"passive"`
 	Recommended []struct {
@@ -253,14 +248,18 @@ type ChampionInfo struct {
 	} `json:"recommended"`
 }
 
-func (cpi ChampionPassiveImg) Fetch(version Version) (image.Image, error) {
-	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", version, cpi))
+func (ci ChampionBrief) FetchSquareImg() (image.Image, error) {
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.Version, ci.Image.Full))
 }
 
-func (csi ChampionSquareImg) Fetch(version Version) (image.Image, error) {
-	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/champion/%v", version, csi))
+func (ci ChampionInfo) FetchPassiveImg() (image.Image, error) {
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.version, ci.Passive.Image.Full))
 }
 
-func (csi ChampionSpellImg) Fetch(version Version) (image.Image, error) {
-	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/spell/%v", version, csi))
+func (ci ChampionInfo) FetchSquareImg() (image.Image, error) {
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.version, ci.Image.Full))
+}
+
+func (ci ChampionInfo) FetchSpellImg(which int) (image.Image, error) {
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.version, ci.Spells[which].Image.Full))
 }
