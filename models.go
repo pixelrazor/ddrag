@@ -249,7 +249,7 @@ type ChampionInfo struct {
 }
 
 func (ci ChampionBrief) FetchSquareImg() (image.Image, error) {
-	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.Version, ci.Image.Full))
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/champion/%v", ci.Version, ci.Image.Full))
 }
 
 func (ci ChampionInfo) FetchPassiveImg() (image.Image, error) {
@@ -257,9 +257,9 @@ func (ci ChampionInfo) FetchPassiveImg() (image.Image, error) {
 }
 
 func (ci ChampionInfo) FetchSquareImg() (image.Image, error) {
-	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.version, ci.Image.Full))
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/champion/%v", ci.version, ci.Image.Full))
 }
 
 func (ci ChampionInfo) FetchSpellImg(which int) (image.Image, error) {
-	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/passive/%v", ci.version, ci.Spells[which].Image.Full))
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/spell/%v", ci.version, ci.Spells[which].Image.Full))
 }

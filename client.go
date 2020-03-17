@@ -82,7 +82,8 @@ func Champions(language Language, version Version) (map[ChampionID]ChampionInfo,
 
 func Champion(language Language, version Version, id ChampionID) (ChampionInfo, error) {
 	var cb champion
-	err := dispatchAndUnmarshal(fmt.Sprintf(ddragonURL+"/cdn/%v/data/%v/champion/%v.json", version, language, id), &cb)
+	url := fmt.Sprintf(ddragonURL+"/cdn/%v/data/%v/champion/%v.json", version, language, id)
+	err := dispatchAndUnmarshal(url, &cb)
 	if err != nil {
 		return ChampionInfo{}, err
 	}
@@ -103,5 +104,9 @@ func LoadingScreen(id ChampionID, skinNum int) (image.Image, error) {
 
 func Tile(id ChampionID, skinNum int) (image.Image, error) {
 	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/img/champion/tiles/%v_%v.jpg", id, skinNum))
+}
+
+func ProfileIcon(version Version, id int) (image.Image, error) {
+	return fetchImage(fmt.Sprintf(ddragonURL+"/cdn/%v/img/profileicon/%v.png", version, id))
 }
 
